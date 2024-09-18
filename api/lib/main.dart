@@ -25,7 +25,8 @@ class api extends StatefulWidget {
 
 class _apiState extends State<api> {
   getuserpostapi() {
-    var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
+    // var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
+    var url = Uri.https("jsonplaceholder.typicode.com", "posts");
     var response = http.get(url);
     print(response);
   }
