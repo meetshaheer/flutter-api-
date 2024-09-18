@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -24,11 +26,12 @@ class api extends StatefulWidget {
 }
 
 class _apiState extends State<api> {
-  getuserpostapi() {
+  getuserpostapi() async {
     // var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
     var url = Uri.https("jsonplaceholder.typicode.com", "posts");
-    var response = http.get(url);
-    print(response);
+    var response = await http.get(url);
+    var myresponse = jsonDecode(response.body);
+    print(myresponse[0]);
   }
 
   @override
