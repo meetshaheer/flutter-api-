@@ -10,23 +10,41 @@ class Practice extends StatefulWidget {
   State<Practice> createState() => _PracticeState();
 }
 
+List _respose = [];
+
 class _PracticeState extends State<Practice> {
   getuserpostapi() async {
-    var url = Uri.parse("https://jsonplaceholder.typicode.com/users");
+    var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
     var response = await http.get(url);
-    print(response);
+    var responsebody = jsonDecode(response.body);
+    return responsebody;
   }
+
+  @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   getuserpostapi();
+  // }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.amber[50],
       resizeToAvoidBottomInset: false,
-      body: Center(
-        child: ElevatedButton(
-            onPressed: () {
-              getuserpostapi();
-            },
-            child: Text("Show")),
+      body: FutureBuilder(
+        future: getuserpostapi(),
+        builder: (context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+                itemCount: snapshot.data.length,
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(snapshot.data[index]['title']),
+                  );
+                });
+          }
+          return Center(child: const CircularProgressIndicator());
+        },
       ),
     );
   }
