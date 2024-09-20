@@ -10,10 +10,15 @@ class Practice extends StatefulWidget {
   State<Practice> createState() => _PracticeState();
 }
 
-List _respose = [];
-
 class _PracticeState extends State<Practice> {
-  getuserpostapi() async {
+  // getuserpostapi() async {
+  //   var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
+  //   var response = await http.get(url);
+  //   var responsebody = jsonDecode(response.body);
+  //   return responsebody;
+  // }
+
+  getuserAPI() async {
     var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
     var response = await http.get(url);
     var responsebody = jsonDecode(response.body);
@@ -32,16 +37,18 @@ class _PracticeState extends State<Practice> {
       backgroundColor: Colors.amber[50],
       resizeToAvoidBottomInset: false,
       body: FutureBuilder(
-        future: getuserpostapi(),
+        future: getuserAPI(),
         builder: (context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(snapshot.data[index]['title']),
-                  );
-                });
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(snapshot.data[index]['title']),
+                  subtitle: Text(snapshot.data[index]['userId'].toString()),
+                );
+              },
+            );
           }
           return Center(child: const CircularProgressIndicator());
         },
