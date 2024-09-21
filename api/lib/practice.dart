@@ -4,6 +4,7 @@
 
 import 'dart:convert';
 
+import 'package:api/models/post_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -100,7 +101,127 @@ import 'package:http/http.dart' as http;
 //           }),
 //     );
 //   }
+// // }
+// class Practice extends StatefulWidget {
+//   const Practice({super.key});
+
+//   @override
+//   State<Practice> createState() => _PracticeState();
 // }
+
+// class _PracticeState extends State<Practice> {
+//   getuserpostAPI() async {
+//     var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
+//     var response = await http.get(url);
+//     var myresponse = jsonDecode(response.body);
+//     return myresponse;
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: FutureBuilder(
+//           future: getuserpostAPI(),
+//           builder: (context, AsyncSnapshot snapshot) {
+//             if (snapshot.hasData) {
+//               return ListView.builder(
+//                   itemCount: snapshot.data.length,
+//                   itemBuilder: (context, index) {
+//                     var data = snapshot.data[index];
+//                     return ListTile(
+//                       title: Text(data['title']),
+//                       subtitle: Container(
+//                         width: 200,
+//                         color: Colors.lightBlue,
+//                         child: Text(
+//                           data['id'].toString(),
+//                         ),
+//                       ),
+//                       trailing: CircleAvatar(child: Text(data["userId"].toString())),
+//                     );
+//                   });
+//             }
+//             return Center(child: const CircularProgressIndicator());
+//           }),
+//     );
+//   }
+// }
+
+// class Practice extends StatefulWidget {
+//   const Practice({super.key});
+
+//   @override
+//   State<Practice> createState() => _PracticeState();
+// }
+
+// List<PostModel> responseData = [];
+
+// class _PracticeState extends State<Practice> {
+//   Future<List<PostModel>> getpostAPI() async {
+//     var url = Uri.parse("https://jsonplaceholder.typicode.com/posts/");
+//     var response = await http.get(url);
+//     var responsebody = jsonDecode(response.body);
+
+//     for (var eachMap in responsebody) {
+//       responseData.add(PostModel.fromJson(eachMap));
+//     }
+//     return responseData;
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: FutureBuilder(
+//           future: getpostAPI(),
+//           builder: (context, snapshot) {
+//             if (snapshot.hasData) {
+//               return ListTile(
+//                 title: Text(snapshot.data?[0].userId.toString() ?? "No ID"),
+//               );
+//             } else {
+//               return Center(child: const CircularProgressIndicator());
+//             }
+//           }),
+//     );
+//   }
+// }
+
+//Single Map from With Model Approach
+
+// class Practice extends StatefulWidget {
+//   const Practice({super.key});
+
+//   @override
+//   State<Practice> createState() => PracticeState();
+// }
+
+// class PracticeState extends State<Practice> {
+//   Future<PostModel> getpostAPI() async {
+//     var url = Uri.parse("https://jsonplaceholder.typicode.com/posts/1");
+//     var response = await http.get(url);
+//     var responsebody = jsonDecode(response.body);
+
+//     return PostModel.fromJson(responsebody);
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: FutureBuilder(
+//           future: getpostAPI(),
+//           builder: (context, snapshot) {
+//             if (snapshot.hasData) {
+//               return ListTile(
+//                 title: Text(snapshot.data?.id.toString() ?? "No ID"),
+//                 subtitle: Text(snapshot.data?.title ?? "No Title"),
+//               );
+//             }
+//             return const CircularProgressIndicator();
+//           }),
+//     );
+//   }
+// }
+
 class Practice extends StatefulWidget {
   const Practice({super.key});
 
@@ -108,39 +229,41 @@ class Practice extends StatefulWidget {
   State<Practice> createState() => _PracticeState();
 }
 
+List<PostModel> responseData = [];
+
 class _PracticeState extends State<Practice> {
-  getuserpostAPI() async {
+  Future<List<PostModel>> getuserAPI() async {
     var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
     var response = await http.get(url);
-    var myresponse = jsonDecode(response.body);
-    return myresponse;
+    var responsebody = jsonDecode(response.body);
+
+    for (var eachMap in responsebody) {
+      responseData.add(PostModel.fromJson(eachMap));
+    }
+
+    return responseData;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: getuserpostAPI(),
-          builder: (context, AsyncSnapshot snapshot) {
+          future: getuserAPI(),
+          builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
-                  itemCount: snapshot.data.length,
+                  itemCount: responseData.length,
                   itemBuilder: (context, index) {
-                    var data = snapshot.data[index];
                     return ListTile(
-                      title: Text(data['title']),
-                      subtitle: Container(
-                        width: 200,
-                        color: Colors.lightBlue,
-                        child: Text(
-                          data['id'].toString(),
-                        ),
-                      ),
-                      trailing: CircleAvatar(child: Text(data["userId"].toString())),
+                      title: Text(snapshot.data?[index].title ?? "No Title"),
+                      subtitle: Text(responseData?[index].id.toString() ?? "No ID"),
                     );
                   });
+            } else {
+              return Center(
+                child: CircularProgressIndicator(),
+              );
             }
-            return Center(child: const CircularProgressIndicator());
           }),
     );
   }
