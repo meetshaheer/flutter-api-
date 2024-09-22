@@ -4,9 +4,12 @@
 
 import 'dart:convert';
 
+import 'package:api/models/post_api.dart';
 import 'package:api/models/post_model.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+
+//  https://jsonplaceholder.typicode.com/posts
 
 // // class Practice extends StatefulWidget {
 // //   const Practice({super.key});
@@ -220,6 +223,133 @@ import 'package:http/http.dart' as http;
 //           }),
 //     );
 //   }
+// // }
+
+// class Practice extends StatefulWidget {
+//   const Practice({super.key});
+
+//   @override
+//   State<Practice> createState() => _PracticeState();
+// }
+
+// List<PostModel> responseData = [];
+
+// class _PracticeState extends State<Practice> {
+//   Future<List<PostModel>> getuserAPI() async {
+//     var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
+//     var response = await http.get(url);
+//     var responsebody = jsonDecode(response.body);
+
+//     for (var eachMap in responsebody) {
+//       responseData.add(PostModel.fromJson(eachMap));
+//     }
+
+//     return responseData;
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: FutureBuilder(
+//           future: getuserAPI(),
+//           builder: (context, snapshot) {
+//             if (snapshot.hasData) {
+//               return ListView.builder(
+//                   itemCount: responseData.length,
+//                   itemBuilder: (context, index) {
+//                     return ListTile(
+//                       title: Text(snapshot.data?[index].title ?? "No Title"),
+//                       subtitle: Text(responseData?[index].id.toString() ?? "No ID"),
+//                     );
+//                   });
+//             } else {
+//               return const Center(
+//                 child: CircularProgressIndicator(),
+//               );
+//             }
+//           }),
+//     );
+//   }
+// }
+
+// class Practice extends StatefulWidget {
+//   const Practice({super.key});
+
+//   @override
+//   State<Practice> createState() => _PracticeState();
+// }
+
+// List _response = [];
+
+// class _PracticeState extends State<Practice> {
+//   getuserAPI() async {
+//     var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
+//     var response = await http.get(url);
+//     var responsebody = jsonDecode(response.body);
+//     return responsebody;
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//         body: FutureBuilder(
+//             future: getuserAPI(),
+//             builder: (context, AsyncSnapshot snapshot) {
+//               if (snapshot.hasData) {
+//                 return ListView.builder(
+//                     itemCount: snapshot.data.length,
+//                     itemBuilder: (context, index) {
+//                       return ListTile(
+//                         title: Text(snapshot.data[index]['id'].toString()),
+//                       );
+//                     });
+//               }
+//               return Center(child: CircularProgressIndicator());
+//             }));
+//   }
+// }
+
+// class Practice extends StatefulWidget {
+//   const Practice({super.key});
+
+//   @override
+//   State<Practice> createState() => _PracticeState();
+// }
+
+// List<PostModelApi> responseData = [];
+
+// class _PracticeState extends State<Practice> {
+//   Future<List<PostModelApi>> getuserAPI() async {
+//     var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
+//     var response = await http.get(url);
+//     var responsebody = jsonDecode(response.body);
+
+//     for (var eachMap in responsebody) {
+//       responseData.add(PostModelApi.fromJson(eachMap));
+//     }
+
+//     return responseData;
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: FutureBuilder(
+//           future: getuserAPI(),
+//           builder: (context, snapshot) {
+//             if (snapshot.hasData) {
+//               return ListView.builder(
+//                   itemCount: responseData.length,
+//                   itemBuilder: (context, index) {
+//                     return ListTile(
+//                       title: Text(responseData[index].title ?? "No title"),
+//                     );
+//                   });
+//             }
+//             return Center(child: CircularProgressIndicator());
+//           }),
+//     );
+//   }
 // }
 
 class Practice extends StatefulWidget {
@@ -229,41 +359,37 @@ class Practice extends StatefulWidget {
   State<Practice> createState() => _PracticeState();
 }
 
-List<PostModel> responseData = [];
+List<PostModelApi> modelList = [];
 
 class _PracticeState extends State<Practice> {
-  Future<List<PostModel>> getuserAPI() async {
-    var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
+  Future<List<PostModelApi>> getAPI() async {
+    var url = Uri.parse("https://jsonplaceholder.typicode.com/posts/");
     var response = await http.get(url);
     var responsebody = jsonDecode(response.body);
 
-    for (var eachMap in responsebody) {
-      responseData.add(PostModel.fromJson(eachMap));
+    for (var eachelement in responsebody) {
+      modelList.add(PostModelApi.fromJson(eachelement));
     }
 
-    return responseData;
+    return modelList;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: FutureBuilder(
-          future: getuserAPI(),
+          future: getAPI(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
-                  itemCount: responseData.length,
+                  itemCount: modelList.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(snapshot.data?[index].title ?? "No Title"),
-                      subtitle: Text(responseData?[index].id.toString() ?? "No ID"),
+                      title: Text(snapshot.data?[index].body ?? "dc"),
                     );
                   });
-            } else {
-              return Center(
-                child: CircularProgressIndicator(),
-              );
             }
+            return CircularProgressIndicator();
           }),
     );
   }
