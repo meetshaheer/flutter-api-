@@ -352,6 +352,49 @@ import 'package:http/http.dart' as http;
 //   }
 // }
 
+// class Practice extends StatefulWidget {
+//   const Practice({super.key});
+
+//   @override
+//   State<Practice> createState() => _PracticeState();
+// }
+
+// List<PostModelApi> modelList = [];
+
+// class _PracticeState extends State<Practice> {
+//   Future<List<PostModelApi>> getAPI() async {
+//     var url = Uri.parse("https://jsonplaceholder.typicode.com/posts/");
+//     var response = await http.get(url);
+//     var responsebody = jsonDecode(response.body);
+
+//     for (var eachelement in responsebody) {
+//       modelList.add(PostModelApi.fromJson(eachelement));
+//     }
+
+//     return modelList;
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: FutureBuilder(
+//           future: getAPI(),
+//           builder: (context, snapshot) {
+//             if (snapshot.hasData) {
+//               return ListView.builder(
+//                   itemCount: modelList.length,
+//                   itemBuilder: (context, index) {
+//                     return ListTile(
+//                       title: Text(snapshot.data?[index].body ?? "dc"),
+//                     );
+//                   });
+//             }
+//             return CircularProgressIndicator();
+//           }),
+//     );
+//   }
+// }
+
 class Practice extends StatefulWidget {
   const Practice({super.key});
 
@@ -359,19 +402,19 @@ class Practice extends StatefulWidget {
   State<Practice> createState() => _PracticeState();
 }
 
-List<PostModelApi> modelList = [];
+List<PostModelApi> resposeData = [];
 
 class _PracticeState extends State<Practice> {
   Future<List<PostModelApi>> getAPI() async {
-    var url = Uri.parse("https://jsonplaceholder.typicode.com/posts/");
+    var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
     var response = await http.get(url);
     var responsebody = jsonDecode(response.body);
 
-    for (var eachelement in responsebody) {
-      modelList.add(PostModelApi.fromJson(eachelement));
+    for (var eachMap in responsebody) {
+      resposeData.add(PostModelApi.fromJson(eachMap));
     }
 
-    return modelList;
+    return resposeData;
   }
 
   @override
@@ -382,14 +425,18 @@ class _PracticeState extends State<Practice> {
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               return ListView.builder(
-                  itemCount: modelList.length,
+                  itemCount: resposeData.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(snapshot.data?[index].body ?? "dc"),
+                      title: Text(resposeData[index].body ?? "No Title"),
+                      subtitle: Text(resposeData[index].id.toString() ?? ""),
                     );
                   });
             }
-            return CircularProgressIndicator();
+
+            return Center(
+              child: CircularProgressIndicator(),
+            );
           }),
     );
   }
