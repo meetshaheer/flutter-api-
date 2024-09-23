@@ -434,7 +434,7 @@ class _PracticeState extends State<Practice> {
                   });
             }
 
-            return Center(
+            return const Center(
               child: CircularProgressIndicator(),
             );
           }),
