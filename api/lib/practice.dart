@@ -395,6 +395,53 @@ import 'package:http/http.dart' as http;
 //   }
 // }
 
+// class Practice extends StatefulWidget {
+//   const Practice({super.key});
+
+//   @override
+//   State<Practice> createState() => _PracticeState();
+// }
+
+// List<PostModelApi> resposeData = [];
+
+// class _PracticeState extends State<Practice> {
+//   Future<List<PostModelApi>> getAPI() async {
+//     var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
+//     var response = await http.get(url);
+//     var responsebody = jsonDecode(response.body);
+
+//     for (var eachMap in responsebody) {
+//       resposeData.add(PostModelApi.fromJson(eachMap));
+//     }
+
+//     return resposeData;
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: FutureBuilder(
+//           future: getAPI(),
+//           builder: (context, snapshot) {
+//             if (snapshot.hasData) {
+//               return ListView.builder(
+//                   itemCount: resposeData.length,
+//                   itemBuilder: (context, index) {
+//                     return ListTile(
+//                       title: Text(resposeData[index].body ?? "No Title"),
+//                       subtitle: Text(resposeData[index].id.toString() ?? ""),
+//                     );
+//                   });
+//             }
+
+//             return const Center(
+//               child: CircularProgressIndicator(),
+//             );
+//           }),
+//     );
+//   }
+// }
+
 class Practice extends StatefulWidget {
   const Practice({super.key});
 
@@ -402,42 +449,41 @@ class Practice extends StatefulWidget {
   State<Practice> createState() => _PracticeState();
 }
 
-List<PostModelApi> resposeData = [];
+List<PostModel> responseData = [];
 
 class _PracticeState extends State<Practice> {
-  Future<List<PostModelApi>> getAPI() async {
+  getAPI() async {
     var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
     var response = await http.get(url);
     var responsebody = jsonDecode(response.body);
 
     for (var eachMap in responsebody) {
-      resposeData.add(PostModelApi.fromJson(eachMap));
+      responseData.add(PostModel.fromJson(eachMap));
     }
 
-    return resposeData;
+    return responseData;
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: FutureBuilder(
-          future: getAPI(),
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
+      body: SafeArea(
+        child: FutureBuilder(
+            future: getAPI(),
+            builder: (context, snapshot) {
               return ListView.builder(
-                  itemCount: resposeData.length,
+                  itemCount: responseData.length,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(resposeData[index].body ?? "No Title"),
-                      subtitle: Text(resposeData[index].id.toString() ?? ""),
+                      title: Text(responseData[index].title ?? "no title"),
+                      subtitle: Text(responseData[index].userId.toString() ?? "no ID"),
+                      trailing: CircleAvatar(
+                        child: Text(responseData[index].id.toString()),
+                      ),
                     );
                   });
-            }
-
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }),
+            }),
+      ),
     );
   }
 }
