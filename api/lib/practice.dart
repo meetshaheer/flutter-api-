@@ -455,7 +455,7 @@ TextEditingController updatetitlecontroller = TextEditingController();
 Future<List<postModel>> getAPI() async {
   List<postModel> responseData = [];
 
-  var url = Uri.parse("https://crudcrud.com/api/f5cb0dde2e5d4989bbc7c7e8443b3d39/users");
+  var url = Uri.parse("https://crudcrud.com/api/a1d6fdffbebe4cd8884955df93d1bfbd/names");
   var response = await http.get(url);
 
   var responsebody = jsonDecode(response.body);
@@ -468,7 +468,7 @@ Future<List<postModel>> getAPI() async {
 }
 
 postAPI() async {
-  var url = Uri.parse("https://crudcrud.com/api/f5cb0dde2e5d4989bbc7c7e8443b3d39/users");
+  var url = Uri.parse("https://crudcrud.com/api/a1d6fdffbebe4cd8884955df93d1bfbd/names");
 
   var response = await http.post(
     url,
@@ -484,12 +484,12 @@ postAPI() async {
 }
 
 deleteAPI(String id) async {
-  var url = Uri.parse("https://crudcrud.com/api/f5cb0dde2e5d4989bbc7c7e8443b3d39/users/$id");
+  var url = Uri.parse("https://crudcrud.com/api/a1d6fdffbebe4cd8884955df93d1bfbd/names/$id");
   await http.delete(url);
 }
 
 updatedAPI(String id) async {
-  var url = Uri.parse("https://crudcrud.com/api/f5cb0dde2e5d4989bbc7c7e8443b3d39/users/$id");
+  var url = Uri.parse("https://crudcrud.com/api/a1d6fdffbebe4cd8884955df93d1bfbd/names/$id");
   await http.put(
     url,
     headers: {'Content-Type': 'application/json'},
