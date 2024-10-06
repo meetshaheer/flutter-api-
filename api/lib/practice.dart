@@ -474,7 +474,7 @@ postAPI() async {
       {
         "title": "Ali",
         "subtitle": "Yesterday at 6 PM",
-        "counts": "1",
+        "counts": DateTime.now().toString().substring(10, 19),
       },
     ),
   );
@@ -494,9 +494,19 @@ class _PracticeState extends State<Practice> {
                   itemBuilder: (context, index) {
                     return ListTile(
                       title: Text(snapshot.data?[index].title ?? "no title"),
-                      subtitle: Text(snapshot.data?[index].subtitle.toString() ?? "no ID"),
+                      subtitle: Row(
+                        children: [
+                          Text(snapshot.data?[index].subtitle.toString() ?? "no ID"),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          Badge(
+                            label: Text(snapshot.data![index].counts.toString()),
+                          )
+                        ],
+                      ),
                       trailing: CircleAvatar(
-                        child: Text(snapshot.data![index].counts.toString()),
+                        child: IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
                       ),
                     );
                   });
