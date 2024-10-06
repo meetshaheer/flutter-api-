@@ -452,7 +452,7 @@ class Practice extends StatefulWidget {
 Future<List<postModel>> getAPI() async {
   List<postModel> responseData = [];
 
-  var url = Uri.parse("https://crudcrud.com/api/29b927f1ac8f44cfab482262dbfe8936/users");
+  var url = Uri.parse("https://crudcrud.com/api/3455acae2ab4466d88165b3230cd1262/users");
   var response = await http.get(url);
 
   var responsebody = jsonDecode(response.body);
@@ -465,7 +465,7 @@ Future<List<postModel>> getAPI() async {
 }
 
 postAPI() async {
-  var url = Uri.parse("https://crudcrud.com/api/29b927f1ac8f44cfab482262dbfe8936/users/");
+  var url = Uri.parse("https://crudcrud.com/api/3455acae2ab4466d88165b3230cd1262/users");
 
   var response = await http.post(
     url,
@@ -481,8 +481,23 @@ postAPI() async {
 }
 
 deleteAPI(String id) async {
-  var url = Uri.parse("https://crudcrud.com/api/29b927f1ac8f44cfab482262dbfe8936/users/$id");
+  var url = Uri.parse("https://crudcrud.com/api/3455acae2ab4466d88165b3230cd1262/users/$id");
   await http.delete(url);
+}
+
+updatedAPI(String id) async {
+  var url = Uri.parse("https://crudcrud.com/api/3455acae2ab4466d88165b3230cd1262/users/$id");
+  await http.put(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode(
+      {
+        "title": "Ahmed Bin Mukhtar",
+        "subtitle": "Yesterday at 6 PM",
+        "counts": DateTime.now().toString().substring(10, 19),
+      },
+    ),
+  );
 }
 
 class _PracticeState extends State<Practice> {
@@ -517,6 +532,14 @@ class _PracticeState extends State<Practice> {
                               setState(() {});
                             },
                             icon: const Icon(Icons.delete)),
+                      ),
+                      leading: CircleAvatar(
+                        child: IconButton(
+                            onPressed: () async {
+                              await updatedAPI(snapshot.data?[index].sId ?? "0");
+                              setState(() {});
+                            },
+                            icon: const Icon(Icons.edit)),
                       ),
                     );
                   });
