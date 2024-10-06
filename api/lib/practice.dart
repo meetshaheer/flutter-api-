@@ -579,13 +579,7 @@ class _PracticeState extends State<Practice> {
                       );
                     });
               }
-              return const Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  CircularProgressIndicator(),
-                ],
-              );
+              return const Center(child: CircularProgressIndicator());
             }),
       ),
       floatingActionButton: FloatingActionButton(
