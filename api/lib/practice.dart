@@ -449,40 +449,70 @@ class Practice extends StatefulWidget {
   State<Practice> createState() => _PracticeState();
 }
 
-List<PostModel> responseData = [];
+Future<List<postModel>> getAPI() async {
+  List<postModel> responseData = [];
 
-class _PracticeState extends State<Practice> {
-  getAPI() async {
-    var url = Uri.parse("https://jsonplaceholder.typicode.com/posts");
-    var response = await http.get(url);
-    var responsebody = jsonDecode(response.body);
+  var url = Uri.parse("https://crudcrud.com/api/29b927f1ac8f44cfab482262dbfe8936/users");
+  var response = await http.get(url);
 
-    for (var eachMap in responsebody) {
-      responseData.add(PostModel.fromJson(eachMap));
-    }
+  var responsebody = jsonDecode(response.body);
 
-    return responseData;
+  for (var eachMap in responsebody) {
+    responseData.add(postModel.fromJson(eachMap));
   }
 
+  return responseData;
+}
+
+postAPI() async {
+  var url = Uri.parse("https://crudcrud.com/api/29b927f1ac8f44cfab482262dbfe8936/users/");
+
+  var response = await http.post(
+    url,
+    headers: {'Content-Type': 'application/json'},
+    body: jsonEncode(
+      {
+        "title": "Ali",
+        "subtitle": "Yesterday at 6 PM",
+        "counts": "1",
+      },
+    ),
+  );
+}
+
+class _PracticeState extends State<Practice> {
+  bool isloading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: FutureBuilder(
             future: getAPI(),
-            builder: (context, snapshot) {
+            builder: (context, AsyncSnapshot<List<postModel>> snapshot) {
               return ListView.builder(
-                  itemCount: responseData.length,
+                  itemCount: snapshot.data?.length ?? 0,
                   itemBuilder: (context, index) {
                     return ListTile(
-                      title: Text(responseData[index].title ?? "no title"),
-                      subtitle: Text(responseData[index].userId.toString() ?? "no ID"),
+                      title: Text(snapshot.data?[index].title ?? "no title"),
+                      subtitle: Text(snapshot.data?[index].subtitle.toString() ?? "no ID"),
                       trailing: CircleAvatar(
-                        child: Text(responseData[index].id.toString()),
+                        child: Text(snapshot.data![index].counts.toString()),
                       ),
                     );
                   });
             }),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          setState(() {
+            isloading = true;
+          });
+          await postAPI();
+          setState(() {
+            isloading = false;
+          });
+        },
+        child: isloading ? const CircularProgressIndicator() : const Icon(Icons.add),
       ),
     );
   }
