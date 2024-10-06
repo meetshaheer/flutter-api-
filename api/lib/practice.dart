@@ -480,6 +480,11 @@ postAPI() async {
   );
 }
 
+deleteAPI(String id) async {
+  var url = Uri.parse("https://crudcrud.com/api/29b927f1ac8f44cfab482262dbfe8936/users/$id");
+  await http.delete(url);
+}
+
 class _PracticeState extends State<Practice> {
   bool isloading = false;
   @override
@@ -506,7 +511,12 @@ class _PracticeState extends State<Practice> {
                         ],
                       ),
                       trailing: CircleAvatar(
-                        child: IconButton(onPressed: () {}, icon: Icon(Icons.delete)),
+                        child: IconButton(
+                            onPressed: () async {
+                              await deleteAPI(snapshot.data?[index].sId ?? "0");
+                              setState(() {});
+                            },
+                            icon: const Icon(Icons.delete)),
                       ),
                     );
                   });
