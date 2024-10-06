@@ -2,6 +2,7 @@
 
 // // import 'package:flutter/material.dart';
 
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:api/models/post_api.dart';
@@ -449,10 +450,12 @@ class Practice extends StatefulWidget {
   State<Practice> createState() => _PracticeState();
 }
 
+TextEditingController addtitlecontroller = TextEditingController();
+TextEditingController updatetitlecontroller = TextEditingController();
 Future<List<postModel>> getAPI() async {
   List<postModel> responseData = [];
 
-  var url = Uri.parse("https://crudcrud.com/api/3455acae2ab4466d88165b3230cd1262/users");
+  var url = Uri.parse("https://crudcrud.com/api/f5cb0dde2e5d4989bbc7c7e8443b3d39/users");
   var response = await http.get(url);
 
   var responsebody = jsonDecode(response.body);
@@ -465,43 +468,43 @@ Future<List<postModel>> getAPI() async {
 }
 
 postAPI() async {
-  var url = Uri.parse("https://crudcrud.com/api/3455acae2ab4466d88165b3230cd1262/users");
+  var url = Uri.parse("https://crudcrud.com/api/f5cb0dde2e5d4989bbc7c7e8443b3d39/users");
 
   var response = await http.post(
     url,
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode(
       {
-        "title": "Ali",
-        "subtitle": "Yesterday at 6 PM",
-        "counts": DateTime.now().toString().substring(10, 19),
+        "title": addtitlecontroller.text,
+        "counts": "Time: ${DateTime.now().toString().substring(10, 19)}",
       },
     ),
   );
+  addtitlecontroller.clear();
 }
 
 deleteAPI(String id) async {
-  var url = Uri.parse("https://crudcrud.com/api/3455acae2ab4466d88165b3230cd1262/users/$id");
+  var url = Uri.parse("https://crudcrud.com/api/f5cb0dde2e5d4989bbc7c7e8443b3d39/users/$id");
   await http.delete(url);
 }
 
 updatedAPI(String id) async {
-  var url = Uri.parse("https://crudcrud.com/api/3455acae2ab4466d88165b3230cd1262/users/$id");
+  var url = Uri.parse("https://crudcrud.com/api/f5cb0dde2e5d4989bbc7c7e8443b3d39/users/$id");
   await http.put(
     url,
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode(
       {
-        "title": "Ahmed Bin Mukhtar",
-        "subtitle": "Yesterday at 6 PM",
-        "counts": DateTime.now().toString().substring(10, 19),
+        "title": updatetitlecontroller.text,
+        "counts": "Time: ${DateTime.now().toString().substring(10, 19)}",
       },
     ),
   );
 }
 
 class _PracticeState extends State<Practice> {
-  bool isloading = false;
+  bool isadd = false;
+  bool isupdate = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -509,53 +512,125 @@ class _PracticeState extends State<Practice> {
         child: FutureBuilder(
             future: getAPI(),
             builder: (context, AsyncSnapshot<List<postModel>> snapshot) {
-              return ListView.builder(
-                  itemCount: snapshot.data?.length ?? 0,
-                  itemBuilder: (context, index) {
-                    return ListTile(
-                      title: Text(snapshot.data?[index].title ?? "no title"),
-                      subtitle: Row(
-                        children: [
-                          Text(snapshot.data?[index].subtitle.toString() ?? "no ID"),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Badge(
-                            label: Text(snapshot.data![index].counts.toString()),
-                          )
-                        ],
-                      ),
-                      trailing: CircleAvatar(
-                        child: IconButton(
-                            onPressed: () async {
-                              await deleteAPI(snapshot.data?[index].sId ?? "0");
-                              setState(() {});
-                            },
-                            icon: const Icon(Icons.delete)),
-                      ),
-                      leading: CircleAvatar(
-                        child: IconButton(
-                            onPressed: () async {
-                              await updatedAPI(snapshot.data?[index].sId ?? "0");
-                              setState(() {});
-                            },
-                            icon: const Icon(Icons.edit)),
-                      ),
-                    );
-                  });
+              if (snapshot.hasData) {
+                return ListView.builder(
+                    itemCount: snapshot.data?.length ?? 0,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(snapshot.data?[index].title ?? "no title"),
+                        subtitle: Row(
+                          children: [
+                            Badge(
+                              label: Text(snapshot.data![index].counts.toString()),
+                            ),
+                          ],
+                        ),
+                        trailing: CircleAvatar(
+                          child: IconButton(
+                              onPressed: () async {
+                                await deleteAPI(snapshot.data?[index].sId ?? "0");
+                                setState(() {});
+                              },
+                              icon: const Icon(Icons.delete)),
+                        ),
+                        leading: CircleAvatar(
+                          child: IconButton(
+                              onPressed: () {
+                                // await updatedAPI(snapshot.data?[index].sId ?? "0");
+                                // setState(() {});
+                                updatetitlecontroller.text = snapshot.data?[index].title ?? "No Title";
+                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext) {
+                                    return AlertDialog(
+                                      title: const Text("Edit Details to API"),
+                                      content: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          TextFormField(
+                                            controller: updatetitlecontroller,
+                                            decoration: const InputDecoration(
+                                              border: OutlineInputBorder(
+                                                borderSide: BorderSide(color: Colors.black),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            height: 20,
+                                          ),
+                                        ],
+                                      ),
+                                      actions: [
+                                        ElevatedButton(
+                                          onPressed: () async {
+                                            await updatedAPI(snapshot.data?[index].sId ?? "0");
+                                            setState(() {});
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text("Update Item In API"),
+                                        )
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              icon: const Icon(Icons.edit)),
+                        ),
+                      );
+                    });
+              }
+              return const Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                ],
+              );
             }),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          setState(() {
-            isloading = true;
-          });
-          await postAPI();
-          setState(() {
-            isloading = false;
-          });
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext) {
+              return AlertDialog(
+                title: const Text("Add Item"),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      controller: addtitlecontroller,
+                      decoration: const InputDecoration(
+                        label: Text("Enter Title"),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ],
+                ),
+                actions: [
+                  ElevatedButton(
+                      onPressed: () async {
+                        setState(() {
+                          isadd = true;
+                        });
+                        await postAPI();
+                        setState(() {
+                          isadd = false;
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: isadd ? const CircularProgressIndicator() : const Text("Add Item In API"))
+                ],
+              );
+            },
+          );
         },
-        child: isloading ? const CircularProgressIndicator() : const Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }
